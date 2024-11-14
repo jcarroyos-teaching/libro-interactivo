@@ -3,7 +3,7 @@ import Fabula from '../layouts/Fabula';
 import SopaDeLetras from '../components/Sopadeletras';
 import Ilustracion from '../components/Ilustracion';
 import Boton from '../components/Boton';
-import TextoConPalabrasOcultas from '../components/TextoConPalabrasOcultas'; // Import the component
+import TextoConPalabrasOcultas from '../components/TextoConPalabrasOcultas';
 import data from '../data/fabula.json';
 
 const PaginaFabula = () => {
@@ -14,7 +14,6 @@ const PaginaFabula = () => {
 
   useEffect(() => {
     setCurrentData(data[currentIndex]);
-    setFoundWords([]); // Reset found words when the index changes
   }, [currentIndex]);
 
   const handleCompletion = () => {
@@ -22,23 +21,40 @@ const PaginaFabula = () => {
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
+    console.log('Botón "Siguiente" clickeado');
+    setFoundWords([]); // Reset found words for the new data
     setCompleted(false);
+    setCurrentIndex((prevIndex) => {
+      const newIndex = (prevIndex + 1) % data.length;
+      setCurrentData(data[newIndex]); // Update currentData immediately
+      console.log(`New words: word1=${data[newIndex].word1}, word2=${data[newIndex].word2}`);
+      return newIndex;
+    });
   };
 
   const handleWordFound = (word) => {
-    setFoundWords((prevFoundWords) => [...prevFoundWords, word.toLowerCase()]);
+    const normalizedWord = word.toLowerCase();
+    setFoundWords((prevFoundWords) => 
+      prevFoundWords.includes(normalizedWord) ? prevFoundWords : [...prevFoundWords, normalizedWord]
+    );
   };
 
   return (
     <Fabula>
-      <SopaDeLetras word1={currentData.word1} word2={currentData.word2} onComplete={handleCompletion} onWordFound={handleWordFound} />
-      <TextoConPalabrasOcultas text={currentData.text} hiddenWords={[currentData.word1, currentData.word2]} foundWords={foundWords} />
+      <SopaDeLetras 
+        word1={currentData.word1} 
+        word2={currentData.word2} 
+        onComplete={handleCompletion} 
+        onWordFound={handleWordFound} 
+      />
+      <TextoConPalabrasOcultas 
+        text={currentData.text} 
+        hiddenWords={[currentData.word1.toLowerCase(), currentData.word2.toLowerCase()]} 
+        foundWords={foundWords} 
+      />
+      <Ilustracion src={currentData.illustration} alt="Illustration" />
       {completed && (
-        <>
-          <Ilustracion src={currentData.illustration} alt="Illustration" />
-          <Boton text="Siguiente" route="#" onClick={handleNext} />
-        </>
+        <Boton text="Siguiente" route="#" onClick={handleNext} />
       )}
     </Fabula>
   );

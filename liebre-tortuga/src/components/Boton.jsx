@@ -2,11 +2,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Boton = ({ text, color = 'blue', route }) => {
+const Boton = ({ text, color = 'blue', route, onClick }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(route);
+    if (onClick) {
+      onClick();
+    }
+    if (route) {
+      navigate(route);
+    }
   };
 
   return (

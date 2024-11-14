@@ -71,7 +71,7 @@ const SopaDeLetras = ({ word1, word2, onComplete, onWordFound = () => {} }) => {
     setSelectedCells([]);
     setFoundWords([]);
     setCompleted(false);
-  }, [rows, cols, words]);
+  }, [rows, cols, words, word1, word2]);
 
   useEffect(() => {
     if (grid.length > 0 && grid[0].length > 0) {
