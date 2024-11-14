@@ -3,12 +3,14 @@ import React from 'react';
 import Fabula from '../layouts/Fabula';
 import SopaDeLetras from '../components/Sopadeletras';
 
-const HolaMundo = () => {
+const PaginaFabula = () => {
+  const text = "La liebre y la tortuga decidieron competir en una carrera.";
+
   return (
     <Fabula>
-      <SopaDeLetras word1="LIEBRE" word2="TORTUGA" />
+      <SopaDeLetras word1="liebre" word2="tortuga" text={text} />
     </Fabula>
   );
 };
 
-export default HolaMundo;
+export default PaginaFabula;

@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
+import TextoConPalabrasOcultas from './TextoConPalabrasOcultas';
 
 const getRandomPosition = (rows, cols, wordLength, isVertical) => {
   const row = isVertical ? Math.floor(Math.random() * (rows - wordLength + 1)) : Math.floor(Math.random() * rows);
@@ -41,11 +42,11 @@ const generateGrid = (rows, cols, words) => {
     }
   });
 
-  // Fill the rest of the grid with random letters
+  // Fill the rest of the grid with random letters in lowercase
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       if (!newGrid[row][col]) {
-        newGrid[row][col] = String.fromCharCode(65 + Math.floor(Math.random() * 26)); // A-Z
+        newGrid[row][col] = String.fromCharCode(97 + Math.floor(Math.random() * 26)); // a-z
       }
     }
   }
@@ -53,10 +54,10 @@ const generateGrid = (rows, cols, words) => {
   return newGrid;
 };
 
-const SopaDeLetras = ({ word1, word2 }) => {
+const SopaDeLetras = ({ word1, word2, text }) => {
   const rows = 7;
   const cols = 7;
-  const words = useMemo(() => [word1, word2], [word1, word2]);
+  const words = useMemo(() => [word1.toLowerCase(), word2.toLowerCase()], [word1, word2]);
   const canvasRef = useRef(null);
   const [grid, setGrid] = useState([]);
   const [selectedCells, setSelectedCells] = useState([]);
@@ -91,7 +92,7 @@ const SopaDeLetras = ({ word1, word2 }) => {
         
         // Draw cell background if selected or part of a found word
         if (selectedCells.some(cell => cell.row === row && cell.col === col) ||
-            foundWords.some(word => word.some(cell => cell.row === row && cell.col === col))) {
+            foundWords.some(word => word.cells.some(cell => cell.row === row && cell.col === col))) {
           ctx.fillStyle = 'rgba(173, 216, 230, 0.6)'; // light blue
           ctx.fillRect(x, y, cellSize, cellSize);
         }
@@ -130,9 +131,10 @@ const SopaDeLetras = ({ word1, word2 }) => {
     if (words && words.length > 0) {
       // Check if selected cells match any word
       const selectedWord = selectedCells.map(cell => grid[cell.row][cell.col]).join('');
-      if (words.includes(selectedWord) || words.includes(selectedWord.split('').reverse().join(''))) {
+      const reversedSelectedWord = selectedCells.map(cell => grid[cell.row][cell.col]).reverse().join('');
+      if (words.includes(selectedWord) || words.includes(reversedSelectedWord)) {
         console.log(`Found word: ${selectedWord}`);
-        setFoundWords([...foundWords, selectedCells]);
+        setFoundWords([...foundWords, { word: selectedWord, cells: selectedCells }]);
       }
     }
     setSelectedCells([]);
@@ -140,16 +142,19 @@ const SopaDeLetras = ({ word1, word2 }) => {
   };
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={cols * cellSize}
-      height={rows * cellSize}
-      style={{ border: '1px solid black' }}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={() => setIsMouseDown(false)}
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        width={cols * cellSize}
+        height={rows * cellSize}
+        style={{ border: '1px solid black' }}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={() => setIsMouseDown(false)}
+      />
+      <TextoConPalabrasOcultas text={text} hiddenWords={words} foundWords={foundWords.map(fw => fw.word)} />
+    </>
   );
 };
 
