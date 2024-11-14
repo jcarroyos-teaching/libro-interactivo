@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 
 const getRandomPosition = (rows, cols, wordLength, isVertical) => {
   const row = isVertical ? Math.floor(Math.random() * (rows - wordLength + 1)) : Math.floor(Math.random() * rows);
@@ -10,7 +10,8 @@ const canPlaceWord = (grid, word, row, col, isVertical) => {
   for (let i = 0; i < word.length; i++) {
     const currentRow = isVertical ? row + i : row;
     const currentCol = isVertical ? col : col + i;
-    if (grid[currentRow][currentCol] !== '' && grid[currentRow][currentCol] !== word[i]) {
+    if (currentRow >= grid.length || currentCol >= grid[0].length || 
+        (grid[currentRow][currentCol] && grid[currentRow][currentCol] !== word[i])) {
       return false;
     }
   }
@@ -25,67 +26,130 @@ const placeWord = (grid, word, row, col, isVertical) => {
   }
 };
 
-const generateGrid = (rows, cols, word1, word2) => {
-  // Crear una grilla vacía
-  const grid = Array.from({ length: rows }, () => Array(cols).fill(''));
+const generateGrid = (rows, cols, words) => {
+  const newGrid = Array.from({ length: rows }, () => Array(cols).fill(''));
 
-  // Insertar la primera palabra en una posición aleatoria
-  let isVertical1 = Math.random() < 0.5;
-  let { row: row1, col: col1 } = getRandomPosition(rows, cols, word1.length, isVertical1);
-  while (!canPlaceWord(grid, word1, row1, col1, isVertical1)) {
-    isVertical1 = Math.random() < 0.5;
-    ({ row: row1, col: col1 } = getRandomPosition(rows, cols, word1.length, isVertical1));
-  }
-  placeWord(grid, word1, row1, col1, isVertical1);
+  words.forEach(word => {
+    let placed = false;
+    while (!placed) {
+      const isVertical = Math.random() < 0.5;
+      const { row, col } = getRandomPosition(rows, cols, word.length, isVertical);
+      if (canPlaceWord(newGrid, word, row, col, isVertical)) {
+        placeWord(newGrid, word, row, col, isVertical);
+        placed = true;
+      }
+    }
+  });
 
-  // Insertar la segunda palabra en una posición aleatoria
-  let isVertical2 = Math.random() < 0.5;
-  let { row: row2, col: col2 } = getRandomPosition(rows, cols, word2.length, isVertical2);
-  while (!canPlaceWord(grid, word2, row2, col2, isVertical2) || 
-         (isVertical1 && isVertical2 && col1 === col2 && row2 >= row1 && row2 < row1 + word1.length) ||
-         (!isVertical1 && !isVertical2 && row1 === row2 && col2 >= col1 && col2 < col1 + word1.length) ||
-         (isVertical1 && !isVertical2 && col2 >= col1 && col2 < col1 + word1.length && row2 >= row1 && row2 < row1 + word1.length) ||
-         (!isVertical1 && isVertical2 && col1 >= col2 && col1 < col2 + word2.length && row1 >= row2 && row1 < row2 + word2.length)) {
-    isVertical2 = Math.random() < 0.5;
-    ({ row: row2, col: col2 } = getRandomPosition(rows, cols, word2.length, isVertical2));
-  }
-  placeWord(grid, word2, row2, col2, isVertical2);
-
-  // Rellenar el resto de la grilla con letras aleatorias
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  // Fill the rest of the grid with random letters
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      if (grid[row][col] === '') {
-        grid[row][col] = letters[Math.floor(Math.random() * letters.length)];
+      if (!newGrid[row][col]) {
+        newGrid[row][col] = String.fromCharCode(65 + Math.floor(Math.random() * 26)); // A-Z
       }
     }
   }
 
-  return grid;
+  return newGrid;
 };
 
-const SopaDeLetras = ({ word1, word2, rows = 7, cols = 7 }) => {
-  const grid = generateGrid(rows, cols, word1, word2);
+const SopaDeLetras = ({ word1, word2 }) => {
+  const rows = 7;
+  const cols = 7;
+  const words = useMemo(() => [word1, word2], [word1, word2]);
+  const canvasRef = useRef(null);
+  const [grid, setGrid] = useState([]);
+  const [selectedCells, setSelectedCells] = useState([]);
+  const [foundWords, setFoundWords] = useState([]);
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  const cellSize = 30;
+
+  useEffect(() => {
+    const newGrid = generateGrid(rows, cols, words);
+    setGrid(newGrid);
+  }, [rows, cols, words]);
+
+  useEffect(() => {
+    if (grid.length > 0 && grid[0].length > 0) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      drawGrid(ctx);
+    }
+  }, [grid, selectedCells, foundWords]);
+
+  const drawGrid = (ctx) => {
+    ctx.clearRect(0, 0, cols * cellSize, rows * cellSize);
+    ctx.font = '20px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const letter = grid[row][col];
+        const x = col * cellSize;
+        const y = row * cellSize;
+        
+        // Draw cell background if selected or part of a found word
+        if (selectedCells.some(cell => cell.row === row && cell.col === col) ||
+            foundWords.some(word => word.some(cell => cell.row === row && cell.col === col))) {
+          ctx.fillStyle = 'rgba(173, 216, 230, 0.6)'; // light blue
+          ctx.fillRect(x, y, cellSize, cellSize);
+        }
+
+        ctx.strokeStyle = '#000';
+        ctx.strokeRect(x, y, cellSize, cellSize); // Draw cell border
+
+        ctx.fillStyle = '#000';
+        ctx.fillText(letter, x + cellSize / 2, y + cellSize / 2); // Draw letter
+      }
+    }
+  };
+
+  const getCellAtPosition = (x, y) => ({
+    row: Math.floor(y / cellSize),
+    col: Math.floor(x / cellSize)
+  });
+
+  const handleMouseDown = (e) => {
+    const { row, col } = getCellAtPosition(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    setSelectedCells([{ row, col }]);
+    setIsMouseDown(true);
+  };
+
+  const handleMouseMove = (e) => {
+    if (isMouseDown) {
+      const { row, col } = getCellAtPosition(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      const lastCell = selectedCells[selectedCells.length - 1];
+      if (lastCell.row !== row || lastCell.col !== col) {
+        setSelectedCells([...selectedCells, { row, col }]);
+      }
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (words && words.length > 0) {
+      // Check if selected cells match any word
+      const selectedWord = selectedCells.map(cell => grid[cell.row][cell.col]).join('');
+      if (words.includes(selectedWord) || words.includes(selectedWord.split('').reverse().join(''))) {
+        console.log(`Found word: ${selectedWord}`);
+        setFoundWords([...foundWords, selectedCells]);
+      }
+    }
+    setSelectedCells([]);
+    setIsMouseDown(false);
+  };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 30px)`, gap: '5px' }}>
-      {grid.flat().map((letter, index) => (
-        <div
-          key={index}
-          style={{
-            width: '30px',
-            height: '30px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: '1px solid #000',
-            fontSize: '20px',
-          }}
-        >
-          {letter}
-        </div>
-      ))}
-    </div>
+    <canvas
+      ref={canvasRef}
+      width={cols * cellSize}
+      height={rows * cellSize}
+      style={{ border: '1px solid black' }}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={() => setIsMouseDown(false)}
+    />
   );
 };
 
