@@ -21,16 +21,16 @@ const PaginaFabula = () => {
   };
 
   const handleNext = () => {
-    console.log('Botón "Siguiente" clickeado');
-    setFoundWords([]); // Reset found words for the new data
+    setFoundWords([]);
     setCompleted(false);
     setCurrentIndex((prevIndex) => {
       const newIndex = (prevIndex + 1) % data.length;
-      setCurrentData(data[newIndex]); // Update currentData immediately
-      console.log(`New words: word1=${data[newIndex].word1}, word2=${data[newIndex].word2}`);
+      setCurrentData(data[newIndex]);
       return newIndex;
     });
   };
+
+  const isLastIndex = currentIndex === data.length - 1;
 
   const handleWordFound = (word) => {
     const normalizedWord = word.toLowerCase();
@@ -54,7 +54,7 @@ const PaginaFabula = () => {
       />
       <Ilustracion src={currentData.illustration} alt="Illustration" />
       {completed && (
-        <Boton text="Siguiente" route="#" onClick={handleNext} />
+        <Boton text={isLastIndex ? "Reiniciar" : "Siguiente"} route={isLastIndex ? "/" : "#"} onClick={handleNext} />
       )}
     </Fabula>
   );

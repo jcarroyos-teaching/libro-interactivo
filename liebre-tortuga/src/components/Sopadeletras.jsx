@@ -41,11 +41,10 @@ const generateGrid = (rows, cols, words) => {
     }
   });
 
-  // Fill the rest of the grid with random letters in lowercase
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       if (!newGrid[row][col]) {
-        newGrid[row][col] = String.fromCharCode(97 + Math.floor(Math.random() * 26)); // a-z
+        newGrid[row][col] = String.fromCharCode(97 + Math.floor(Math.random() * 26)); 
       }
     }
   }
@@ -100,18 +99,17 @@ const SopaDeLetras = ({ word1, word2, onComplete, onWordFound = () => {} }) => {
         const x = col * cellSize;
         const y = row * cellSize;
         
-        // Draw cell background if selected or part of a found word
         if (selectedCells.some(cell => cell.row === row && cell.col === col) ||
             foundWords.some(word => word.cells.some(cell => cell.row === row && cell.col === col))) {
-          ctx.fillStyle = 'rgba(173, 216, 230, 0.6)'; // light blue
+          ctx.fillStyle = 'rgba(173, 216, 230, 0.6)';
           ctx.fillRect(x, y, cellSize, cellSize);
         }
 
         ctx.strokeStyle = '#000';
-        ctx.strokeRect(x, y, cellSize, cellSize); // Draw cell border
+        ctx.strokeRect(x, y, cellSize, cellSize);
 
         ctx.fillStyle = '#000';
-        ctx.fillText(letter, x + cellSize / 2, y + cellSize / 2); // Draw letter
+        ctx.fillText(letter, x + cellSize / 2, y + cellSize / 2);
       }
     }
   };
@@ -139,13 +137,11 @@ const SopaDeLetras = ({ word1, word2, onComplete, onWordFound = () => {} }) => {
 
   const handleMouseUp = () => {
     if (words && words.length > 0) {
-      // Check if selected cells match any word
       const selectedWord = selectedCells.map(cell => grid[cell.row][cell.col]).join('');
       const reversedSelectedWord = selectedCells.map(cell => grid[cell.row][cell.col]).reverse().join('');
       if (words.includes(selectedWord) || words.includes(reversedSelectedWord)) {
-        console.log(`Found word: ${selectedWord}`);
         setFoundWords([...foundWords, { word: selectedWord, cells: selectedCells }]);
-        onWordFound(selectedWord); // Notify parent component
+        onWordFound(selectedWord);
       }
     }
     setSelectedCells([]);
