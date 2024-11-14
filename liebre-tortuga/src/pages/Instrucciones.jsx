@@ -10,7 +10,7 @@ const Instrucciones = () => {
       <Texto content="Instrucciones" type="h1" />
       <Texto content="Aquí van las instrucciones para usar la aplicación." type="p" />
       <Texto content="Aquí van las instrucciones para usar la aplicación." type="p" />
-      <Boton text="A leer" color="green" route="/pagina-1" />
+      <Boton text="A leer" color="green" route="/fabula" />
       
     </Portada>
   );

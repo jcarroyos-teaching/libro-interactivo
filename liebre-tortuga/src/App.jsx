@@ -6,6 +6,7 @@ import Texto from './components/Texto';
 import Ilustracion from './components/Ilustracion';
 import Boton from './components/Boton';
 import Instrucciones from './pages/Instrucciones';
+import Fabula from './pages/Fabula';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           }
         />
         <Route path="/instrucciones" element={<Instrucciones />} />
+        <Route path="/fabula" element={<Fabula />} />
     
       </Routes>
     </Router>
