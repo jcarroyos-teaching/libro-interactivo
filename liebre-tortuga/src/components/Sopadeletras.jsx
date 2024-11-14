@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
-import TextoConPalabrasOcultas from './TextoConPalabrasOcultas';
 
 const getRandomPosition = (rows, cols, wordLength, isVertical) => {
   const row = isVertical ? Math.floor(Math.random() * (rows - wordLength + 1)) : Math.floor(Math.random() * rows);
@@ -54,7 +53,7 @@ const generateGrid = (rows, cols, words) => {
   return newGrid;
 };
 
-const SopaDeLetras = ({ word1, word2, text }) => {
+const SopaDeLetras = ({ word1, word2, onComplete, onWordFound = () => {} }) => {
   const rows = 7;
   const cols = 7;
   const words = useMemo(() => [word1.toLowerCase(), word2.toLowerCase()], [word1, word2]);
@@ -63,12 +62,16 @@ const SopaDeLetras = ({ word1, word2, text }) => {
   const [selectedCells, setSelectedCells] = useState([]);
   const [foundWords, setFoundWords] = useState([]);
   const [isMouseDown, setIsMouseDown] = useState(false);
+  const [completed, setCompleted] = useState(false);
   const cellSize = 30;
 
   useEffect(() => {
     const newGrid = generateGrid(rows, cols, words);
     setGrid(newGrid);
-  }, [rows, cols, words]);
+    setSelectedCells([]);
+    setFoundWords([]);
+    setCompleted(false);
+  }, [rows, cols, words, word1, word2]);
 
   useEffect(() => {
     if (grid.length > 0 && grid[0].length > 0) {
@@ -77,6 +80,13 @@ const SopaDeLetras = ({ word1, word2, text }) => {
       drawGrid(ctx);
     }
   }, [grid, selectedCells, foundWords]);
+
+  useEffect(() => {
+    if (foundWords.length === words.length) {
+      setCompleted(true);
+      onComplete();
+    }
+  }, [foundWords, words, onComplete]);
 
   const drawGrid = (ctx) => {
     ctx.clearRect(0, 0, cols * cellSize, rows * cellSize);
@@ -135,6 +145,7 @@ const SopaDeLetras = ({ word1, word2, text }) => {
       if (words.includes(selectedWord) || words.includes(reversedSelectedWord)) {
         console.log(`Found word: ${selectedWord}`);
         setFoundWords([...foundWords, { word: selectedWord, cells: selectedCells }]);
+        onWordFound(selectedWord); // Notify parent component
       }
     }
     setSelectedCells([]);
@@ -153,7 +164,6 @@ const SopaDeLetras = ({ word1, word2, text }) => {
         onMouseUp={handleMouseUp}
         onMouseLeave={() => setIsMouseDown(false)}
       />
-      <TextoConPalabrasOcultas text={text} hiddenWords={words} foundWords={foundWords.map(fw => fw.word)} />
     </>
   );
 };
