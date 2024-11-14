@@ -11,9 +11,12 @@ const PaginaFabula = () => {
   const [completed, setCompleted] = useState(false);
   const [currentData, setCurrentData] = useState(data[0]);
   const [foundWords, setFoundWords] = useState([]);
+  const [buttonVisible, setButtonVisible] = useState(false);
 
   useEffect(() => {
     setCurrentData(data[currentIndex]);
+    console.log('Current index:', currentIndex);
+    setButtonVisible(false);
   }, [currentIndex]);
 
   const handleCompletion = () => {
@@ -28,6 +31,11 @@ const PaginaFabula = () => {
       setCurrentData(data[newIndex]);
       return newIndex;
     });
+    if (isLastIndex) {
+      setCurrentIndex(0);
+      setCurrentData(data[0]);
+    }
+    setButtonVisible(false);
   };
 
   const isLastIndex = currentIndex === data.length - 1;
@@ -46,6 +54,7 @@ const PaginaFabula = () => {
         word2={currentData.word2} 
         onComplete={handleCompletion} 
         onWordFound={handleWordFound} 
+        setButtonVisible={setButtonVisible} 
       />
       <TextoConPalabrasOcultas 
         text={currentData.text} 
@@ -53,9 +62,12 @@ const PaginaFabula = () => {
         foundWords={foundWords} 
       />
       <Ilustracion src={currentData.illustration} alt="Illustration" />
-      {completed && (
-        <Boton text={isLastIndex ? "Reiniciar" : "Siguiente"} route={isLastIndex ? "/" : "#"} onClick={handleNext} />
-      )}
+      <Boton 
+        text={isLastIndex ? "Reiniciar" : "Siguiente"} 
+        route={isLastIndex ? "/" : "#"} 
+        onClick={handleNext} 
+        visible={buttonVisible}
+      />
     </Fabula>
   );
 };
