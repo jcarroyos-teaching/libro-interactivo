@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Boton = ({ text, color = 'blue', route, onClick }) => {
+const Boton = ({ text, color = 'blue', route, onClick, visible = true }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -12,6 +12,10 @@ const Boton = ({ text, color = 'blue', route, onClick }) => {
       navigate(route);
     }
   };
+
+  if (!visible) {
+    return null;
+  }
 
   return (
     <button

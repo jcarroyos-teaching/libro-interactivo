@@ -52,7 +52,7 @@ const generateGrid = (rows, cols, words) => {
   return newGrid;
 };
 
-const SopaDeLetras = ({ word1, word2, onComplete, onWordFound = () => {} }) => {
+const SopaDeLetras = ({ word1, word2, onComplete, onWordFound = () => {}, setButtonVisible }) => {
   const rows = 7;
   const cols = 7;
   const words = useMemo(() => [word1.toLowerCase(), word2.toLowerCase()], [word1, word2]);
@@ -84,8 +84,9 @@ const SopaDeLetras = ({ word1, word2, onComplete, onWordFound = () => {} }) => {
     if (foundWords.length === words.length) {
       setCompleted(true);
       onComplete();
+      setButtonVisible(true);
     }
-  }, [foundWords, words, onComplete]);
+  }, [foundWords, words, onComplete, setButtonVisible]);
 
   const drawGrid = (ctx) => {
     ctx.clearRect(0, 0, cols * cellSize, rows * cellSize);

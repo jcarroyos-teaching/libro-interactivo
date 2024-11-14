@@ -10,5 +10,11 @@
     "word1": "jajaja",
     "word2": "jijiji",
     "illustration": "https://picsum.photos/id/2/200/300"
+  },
+  {
+    "text": "La latuna y el latuno miran con recelo.",
+    "word1": "latuna",
+    "word2": "latuno",
+    "illustration": "https://picsum.photos/id/3/200/300"
   }
 ]
