@@ -15,7 +15,6 @@ const PaginaFabula = () => {
 
   useEffect(() => {
     setCurrentData(data[currentIndex]);
-    console.log('Current index:', currentIndex);
     setButtonVisible(false);
   }, [currentIndex]);
 
@@ -49,6 +48,8 @@ const PaginaFabula = () => {
 
   return (
     <Fabula>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div>
       <SopaDeLetras 
         word1={currentData.word1} 
         word2={currentData.word2} 
@@ -56,12 +57,14 @@ const PaginaFabula = () => {
         onWordFound={handleWordFound} 
         setButtonVisible={setButtonVisible} 
       />
+      </div>
+      <Ilustracion src={currentData.illustration} alt="Illustration" />
+      </div>
       <TextoConPalabrasOcultas 
         text={currentData.text} 
         hiddenWords={[currentData.word1.toLowerCase(), currentData.word2.toLowerCase()]} 
         foundWords={foundWords} 
       />
-      <Ilustracion src={currentData.illustration} alt="Illustration" />
       <Boton 
         text={isLastIndex ? "Reiniciar" : "Siguiente"} 
         route={isLastIndex ? "/" : "#"} 

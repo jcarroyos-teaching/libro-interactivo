@@ -7,10 +7,10 @@ import Boton from '../components/Boton';
 const Instrucciones = () => {
   return (
     <Portada>
-      <Texto content="Instrucciones" type="h1" />
-      <Texto content="Aquí van las instrucciones para usar la aplicación." type="p" />
-      <Texto content="Aquí van las instrucciones para usar la aplicación." type="p" />
-      <Boton text="A leer" color="green" route="/fabula" />
+      <Texto content="¿Cómo se juega?" type="h1" />
+      <Texto content="Busca las dos palabras en la sopa de letras ¡Es muy sencillo!" type="p" />
+      <Texto content="Lee la historia y clikea en la  flecha para continuar con la historia" type="p" />
+      <Boton text="¡A leer!" color="green" route="/fabula" />
       
     </Portada>
   );
