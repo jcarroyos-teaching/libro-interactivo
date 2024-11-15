@@ -18,7 +18,7 @@ function App() {
             <Portada>
               <Texto content="Este es un título" type="h1" />
               <Texto content="Este es un párrafo" type="p" />
-              <Ilustracion src="src/assets/imagen-portada.png" alt="Descripción de la imagen" />
+              <Ilustracion src="/img/imagen-portada.png" alt="Descripción de la imagen" />
               <Boton text="Comenzar" color="green" route="/instrucciones" />
             </Portada>
           }

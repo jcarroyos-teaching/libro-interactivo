@@ -7,6 +7,7 @@ const getRandomPosition = (rows, cols, wordLength, isVertical) => {
 };
 
 const canPlaceWord = (grid, word, row, col, isVertical) => {
+  if (!grid || !grid.length || !grid[0].length) return false;
   for (let i = 0; i < word.length; i++) {
     const currentRow = isVertical ? row + i : row;
     const currentCol = isVertical ? col : col + i;
@@ -27,6 +28,7 @@ const placeWord = (grid, word, row, col, isVertical) => {
 };
 
 const generateGrid = (rows, cols, words) => {
+  if (!rows || !cols || !words || !words.length) return [];
   const newGrid = Array.from({ length: rows }, () => Array(cols).fill(''));
 
   words.forEach(word => {
