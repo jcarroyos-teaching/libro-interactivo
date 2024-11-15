@@ -15,7 +15,6 @@ const PaginaFabula = () => {
 
   useEffect(() => {
     setCurrentData(data[currentIndex]);
-    console.log('Current index:', currentIndex);
     setButtonVisible(false);
   }, [currentIndex]);
 
