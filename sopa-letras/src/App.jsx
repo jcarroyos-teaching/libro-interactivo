@@ -16,9 +16,13 @@ function App() {
           path="/"
           element={
             <Portada>
-              <Texto content="Este es un título" type="h1" />
-              <Texto content="Este es un párrafo" type="p" />
-              <Ilustracion src="/img/imagen-portada.png" alt="Descripción de la imagen" />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <Texto content="La Liebre y la Tortuga" type="h1" />
+                  <Texto content="Sopita de letras" type="p" />
+                </div>
+                <Ilustracion src="/img/imagen-portada.png" alt="Descripción de la imagen" />
+              </div>
               <Boton text="Comenzar" color="green" route="/instrucciones" />
             </Portada>
           }
