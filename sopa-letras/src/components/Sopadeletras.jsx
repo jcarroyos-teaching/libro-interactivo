@@ -151,17 +151,45 @@ const SopaDeLetras = ({ word1, word2, onComplete, onWordFound = () => {}, setBut
     setIsMouseDown(false);
   };
 
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const { row, col } = getCellAtPosition(touch.clientX - canvasRef.current.getBoundingClientRect().left, touch.clientY - canvasRef.current.getBoundingClientRect().top);
+    setSelectedCells([{ row, col }]);
+    setIsMouseDown(true);
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    if (isMouseDown) {
+      const touch = e.touches[0];
+      const { row, col } = getCellAtPosition(touch.clientX - canvasRef.current.getBoundingClientRect().left, touch.clientY - canvasRef.current.getBoundingClientRect().top);
+      const lastCell = selectedCells[selectedCells.length - 1];
+      if (lastCell.row !== row || lastCell.col !== col) {
+        setSelectedCells([...selectedCells, { row, col }]);
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    handleMouseUp();
+  };
+
   return (
     <>
       <canvas
         ref={canvasRef}
         width={cols * cellSize}
         height={rows * cellSize}
-        style={{ border: '1px solid black' }}
+        style={{ border: '1px solid black', touchAction: 'none' }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={() => setIsMouseDown(false)}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={() => setIsMouseDown(false)}
       />
     </>
   );
