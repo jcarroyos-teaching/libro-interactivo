@@ -1,0 +1,20 @@
+[
+  {
+    "text": "La liebre y la tortuga decidieron competir en una carrera.",
+    "word1": "liebre",
+    "word2": "tortuga",
+    "illustration": "img/01.png"
+  },
+  {
+    "text": "Agregar acá otra frase.",
+    "word1": "otra",
+    "word2": "frase",
+    "illustration": "img/02.png"
+  },
+  {
+    "text": "... y así seguir sucesivamente.",
+    "word1": "así",
+    "word2": "seguir",
+    "illustration": "img/03.png"
+  }
+]
