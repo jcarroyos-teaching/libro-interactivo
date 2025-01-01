@@ -1,8 +1,9 @@
-# React + Vite
+# Contenido del Repositorio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositorio contiene un proyecto interactivo de sopa de letras desarrollado con React y Vite. El objetivo es proporcionar una herramienta educativa que permita a los usuarios buscar y encontrar palabras en una cuadrícula de letras. El proyecto incluye:
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Configuración inicial de React con Vite.
+- Integración de plugins oficiales de Vite para React.
+- Reglas básicas de ESLint para mantener la calidad del código.
+- Componentes de React para la funcionalidad de la sopa de letras.
+- Estilos y diseño para una interfaz de usuario amigable.
